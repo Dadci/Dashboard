@@ -109,18 +109,60 @@ const Dashboard = () => {
 
                 {/* Main Content Grid */}
                 <div className="grid gap-6 md:grid-cols-7">
-                    {/* Chart Section - 4 columns */}
-                    <div className="md:col-span-4">
+                    {/* Left Column - 4 columns width */}
+                    <div className="md:col-span-4 space-y-6">
+                        {/* Chart Section */}
                         <div className="bg-white rounded-xl border border-slate-300 p-6">
                             <h3 className="text-lg font-semibold mb-2">Spending Overview</h3>
                             <p className="text-sm text-slate-500 mb-6">Current spending by category</p>
-                            <div className="h-[200px]">
+                            <div className="h-[250px]">
                                 <SpendingBarChart data={chartData} />
+                            </div>
+                        </div>
+
+                        {/* Transactions Table */}
+                        <div className="bg-white rounded-xl border border-slate-300">
+                            <div className="flex justify-between items-center p-6 border-b border-slate-200">
+                                <h3 className="text-lg font-semibold text-slate-700">Recent Transactions</h3>
+                                <button
+                                    onClick={() => navigate('/transactions')}
+                                    className="text-sm text-slate-600 hover:text-slate-800"
+                                >
+                                    View All →
+                                </button>
+                            </div>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-slate-50 border-b border-slate-200">
+                                        <tr>
+                                            <th className="text-left p-4 text-sm text-slate-600">Description</th>
+                                            <th className="text-left p-4 text-sm text-slate-600">Budget</th>
+                                            <th className="text-left p-4 text-sm text-slate-600">Amount</th>
+                                            <th className="text-left p-4 text-sm text-slate-600">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {recentTransactions.map(transaction => (
+                                            <tr key={transaction.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                                <td className="p-4">{transaction.description}</td>
+                                                <td className="p-4">{transaction.budgetName}</td>
+                                                <td className="p-4">
+                                                    <span className="px-2 py-1 bg-slate-100 rounded-full text-sm">
+                                                        {transaction.amount}€
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 text-slate-500">
+                                                    {new Date(transaction.createdAt).toLocaleString()}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
 
-                    {/* Recent Budgets - 3 columns */}
+                    {/* Right Column - Recent Budgets - 3 columns */}
                     <div className="md:col-span-3">
                         <div className="bg-white rounded-xl border border-slate-300 p-6">
                             <div className="flex justify-between items-center mb-4">
@@ -132,7 +174,7 @@ const Dashboard = () => {
                                     View All →
                                 </button>
                             </div>
-                            <div className="space-y-3"> {/* Reduced spacing between cards */}
+                            <div className="space-y-3">
                                 {recentBudgets.map(budget => (
                                     <BudgetCard
                                         key={budget.id}
@@ -140,52 +182,11 @@ const Dashboard = () => {
                                         transactions={budget.transactions?.length || 0}
                                         onDelete={() => dispatch(deleteBudget(budget.id))}
                                         onEdit={(updatedBudget) => dispatch(editBudget(updatedBudget))}
-                                        compact={true} // Add this prop
+                                        compact={true}
                                     />
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Transactions Table - Full Width */}
-                <div className="bg-white rounded-xl border border-slate-300">
-                    <div className="flex justify-between items-center p-6 border-b border-slate-200">
-                        <h3 className="text-lg font-semibold text-slate-700">Recent Transactions</h3>
-                        <button
-                            onClick={() => navigate('/transactions')}
-                            className="text-sm text-slate-600 hover:text-slate-800"
-                        >
-                            View All →
-                        </button>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead className="bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th className="text-left p-4 text-sm text-slate-600">Description</th>
-                                    <th className="text-left p-4 text-sm text-slate-600">Budget</th>
-                                    <th className="text-left p-4 text-sm text-slate-600">Amount</th>
-                                    <th className="text-left p-4 text-sm text-slate-600">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {recentTransactions.map(transaction => (
-                                    <tr key={transaction.id} className="border-b border-slate-100 hover:bg-slate-50">
-                                        <td className="p-4">{transaction.description}</td>
-                                        <td className="p-4">{transaction.budgetName}</td>
-                                        <td className="p-4">
-                                            <span className="px-2 py-1 bg-slate-100 rounded-full text-sm">
-                                                {transaction.amount}€
-                                            </span>
-                                        </td>
-                                        <td className="p-4 text-slate-500">
-                                            {new Date(transaction.createdAt).toLocaleString()}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
