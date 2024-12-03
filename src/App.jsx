@@ -7,11 +7,13 @@ import BudgetDetails from "./pages/BudgetDetails"
 import Transactions from "./pages/Transactions"
 import { Provider } from 'react-redux'
 import store from './store/store'
+import { Toaster } from 'react-hot-toast'
 
 
 function App() {
   return (
     <Provider store={store}>
+      <Toaster position='top-right' />
       <Router>
         <Routes>
           <Route element={<Layout />}>

@@ -10,6 +10,7 @@ import {
     FiTarget, FiList, FiFolder, FiStar
 } from 'react-icons/fi'
 import EmptyState from '../components/EmptyState'
+import { notify } from '../utils/toast'
 
 const Budget = () => {
     const dispatch = useDispatch()
@@ -101,6 +102,7 @@ const Budget = () => {
             transactions: [],
             emoji: 'FiCoffee'
         })
+        notify.success('Budget created successfully')
     }
 
     return (

@@ -10,6 +10,7 @@ import {
     FiBriefcase, FiSettings, FiShield, FiLifeBuoy, FiBell,
     FiTarget, FiList, FiFolder, FiStar
 } from 'react-icons/fi'
+import { notify } from '../utils/toast'
 
 const BudgetDetails = () => {
     const { id } = useParams()
@@ -63,14 +64,15 @@ const BudgetDetails = () => {
             amount: Number(newTransaction.amount),
             description: newTransaction.description
         }))
-
         setNewTransaction({ description: '', amount: '' })
+        notify.success('Transaction added successfully')
     }
 
     const handleDeleteBudget = () => {
         if (window.confirm('Are you sure you want to delete this budget?')) {
             dispatch(deleteBudget(Number(id)))
             navigate('/budget')
+            notify.success('Budget deleted successfully')
         }
     }
 

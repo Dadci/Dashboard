@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { deleteBudget, editBudget } from '../store/budgetSlice'
 import EmptyState from '../components/EmptyState'
+import { SpendingBarChart } from '../components/BudgetCharts';
 
 const Dashboard = () => {
     const budgets = useSelector(state => state.budgets.items)
@@ -76,19 +77,25 @@ const Dashboard = () => {
         }
     ]
 
+    const chartData = budgets.map(budget => ({
+        name: budget.name,
+        amount: budget.amount,
+        spent: budget.spent
+    }));
+
     return (
-        <div className="w-full overflow-x-auto ">
-            <div className='border-b border-b-slate-300 p-6 sticky top-0 bg-slate-100 '>
+        <div className="w-full overflow-x-auto">
+            <div className='border-b border-b-slate-300 p-6 sticky top-0 bg-slate-100 z-10'>
                 <h2 className="text-xl text-slate-700 font-semibold">Overview</h2>
             </div>
 
             <div className="p-6 space-y-6">
-                {/* Analytics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cards.map((card, index) => (
-                        <div key={index} className="bg-white rounded-xl border border-slate-300 p-6">
+                        <div key={index} className="bg-white rounded-xl border border-slate-300 p-4 hover:shadow-md transition-shadow">
                             <div className="flex items-center gap-4">
-                                <div className={`${card.color} bg-opacity-10 p-4 rounded-full ${card.textColor}`}>
+                                <div className={`${card.color} bg-opacity-10 p-3 rounded-full ${card.textColor}`}>
                                     {card.icon}
                                 </div>
                                 <div>
@@ -100,11 +107,20 @@ const Dashboard = () => {
                     ))}
                 </div>
 
-                {/* Recent Activity Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
+                {/* Single Chart Section - Full Width */}
+                <div className="bg-white p-6 rounded-xl border border-slate-300">
+                    <h3 className="text-lg font-semibold mb-2">Spending Overview</h3>
+                    <p className="text-sm text-slate-500 mb-6">Current spending by category</p>
+                    <div className="h-[150px]"> 
+                        <SpendingBarChart data={chartData} />
+                    </div>
+                </div>
+
+                {/* Recent Activity Section - Improved Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Recent Budgets Column */}
-                    <div className="lg:col-span-1 space-y-4 order-last">
-                        <div className="flex justify-between items-center">
+                    <div className="lg:col-span-1 bg-white rounded-xl border border-slate-300 p-6">
+                        <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold text-slate-700">Recent Budgets</h3>
                             <button
                                 onClick={() => navigate('/budget')}
@@ -127,8 +143,8 @@ const Dashboard = () => {
                     </div>
 
                     {/* Recent Transactions Column */}
-                    <div className="lg:col-span-2">
-                        <div className="flex justify-between items-center mb-4">
+                    <div className="lg:col-span-2 bg-white rounded-xl border border-slate-300">
+                        <div className="flex justify-between items-center p-6 border-b border-slate-200">
                             <h3 className="text-lg font-semibold text-slate-700">Recent Transactions</h3>
                             <button
                                 onClick={() => navigate('/transactions')}
@@ -137,7 +153,7 @@ const Dashboard = () => {
                                 View All →
                             </button>
                         </div>
-                        <div className="bg-white rounded-xl border border-slate-300 overflow-hidden">
+                        <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead className="bg-slate-50 border-b border-slate-200">
                                     <tr>
@@ -149,7 +165,7 @@ const Dashboard = () => {
                                 </thead>
                                 <tbody>
                                     {recentTransactions.map(transaction => (
-                                        <tr key={transaction.id} className="border-b border-slate-100">
+                                        <tr key={transaction.id} className="border-b border-slate-100 hover:bg-slate-50">
                                             <td className="p-4">{transaction.description}</td>
                                             <td className="p-4">{transaction.budgetName}</td>
                                             <td className="p-4">

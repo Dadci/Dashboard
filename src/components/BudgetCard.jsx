@@ -7,6 +7,7 @@ import {
 } from 'react-icons/fi'
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
+import { notify } from '../utils/toast'
 
 const BudgetCard = ({
     id,
@@ -81,6 +82,7 @@ const BudgetCard = ({
         }
         onEdit(updatedBudget)
         setIsEditModalOpen(false)
+        notify.success('Budget updated successfully')
     }
 
     return (
