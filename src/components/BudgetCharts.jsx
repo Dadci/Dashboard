@@ -51,33 +51,37 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export const SpendingBarChart = ({ data }) => {
   return (
-    <div className="h-40">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorSpent" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor={COLORS.spending.gradient[0]} stopOpacity={0.8}/>
-              <stop offset="95%" stopColor={COLORS.spending.gradient[1]} stopOpacity={0.3}/>
-            </linearGradient>
-          </defs>
-          <XAxis 
-            dataKey="name" 
-            tick={{ fontSize: 12 }}
-            interval={0}
-            angle={-45}
-            textAnchor="end"
-            height={60}
-          />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          <Bar 
-            dataKey="spent" 
-            fill="url(#colorSpent)"
-            radius={[4, 4, 0, 0]}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-};
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={data} margin={{ top: 0, right: 15, left: 0, bottom: 0 }}>
+        <XAxis 
+          dataKey="name" 
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => `€${value}`}
+        />
+        <Bar
+          dataKey="amount"
+          fill="#818cf8"
+          radius={[4, 4, 0, 0]}
+        />
+        <Bar
+          dataKey="spent"
+          fill="#3b82f6"
+          radius={[4, 4, 0, 0]}
+        />
+        <Tooltip
+          content={<CustomTooltip />}
+          cursor={{ fill: 'transparent' }}
+        />
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}

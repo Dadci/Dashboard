@@ -17,7 +17,8 @@ const BudgetCard = ({
     spent = 50,
     transactions = 3,
     onDelete,
-    onEdit
+    onEdit,
+    compact = false // New prop
 }) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [editedBudget, setEditedBudget] = useState({
@@ -88,7 +89,9 @@ const BudgetCard = ({
     return (
         <>
             <div 
-                className='bg-white rounded-xl w-full border border-base-300 list-none p-4 hover:border-slate-400 transition-all cursor-pointer'
+                className={`bg-white rounded-xl w-full border border-base-300 list-none ${
+                    compact ? 'p-3' : 'p-4'
+                } hover:border-slate-400 transition-all cursor-pointer`}
                 onClick={(e) => {
                     // If clicking edit button, don't navigate
                     if (e.target.closest('button')) {
@@ -98,19 +101,27 @@ const BudgetCard = ({
                     navigate(`/budget/${id}`);
                 }}
             >
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-slate-100/80 text-2xl h-12 w-12 rounded-full flex justify-center items-center text-slate-600">
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <div className={`bg-slate-100/80 text-2xl ${
+                            compact ? 'h-10 w-10' : 'h-12 w-12'
+                        } rounded-full flex justify-center items-center text-slate-600`}>
                             {icons[emoji] || icons.FiCoffee}
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-bold text-xl text-slate-800">{name}</span>
-                            <span className="text-slate-500 text-sm">
-                                {transactions} transaction(s)
-                            </span>
+                            <span className={`font-bold ${
+                                compact ? 'text-base' : 'text-xl'
+                            } text-slate-800`}>{name}</span>
+                            {!compact && (
+                                <span className="text-slate-500 text-sm">
+                                    {transactions} transaction(s)
+                                </span>
+                            )}
                         </div>
                     </div>
-                    <div className="text-xl font-bold text-slate-600">{amount}€</div>
+                    <div className={`font-bold ${
+                        compact ? 'text-base' : 'text-xl'
+                    } text-slate-600`}>{amount}€</div>
                 </div>
 
                 <div className="flex justify-between items-center text-slate-500 text-sm mb-2">
@@ -118,20 +129,21 @@ const BudgetCard = ({
                     <span>{remaining}€ remaining</span>
                 </div>
 
-                <div className="w-full bg-slate-200 rounded-full h-2.5 mb-4">
+                <div className="w-full bg-slate-200 rounded-full h-2 mb-2">
                     <div
-                        className={`${getProgressColor()} h-2.5 rounded-full transition-all`}
+                        className={`${getProgressColor()} h-2 rounded-full transition-all`}
                         style={{ width: `${progress}%` }}
                     />
                 </div>
                 
-                {/* Add Edit button */}
-                <button
-                    onClick={() => setIsEditModalOpen(true)}
-                    className="mt-2 text-sm text-slate-600 hover:text-slate-800"
-                >
-                    Edit Budget
-                </button>
+                {!compact && (
+                    <button
+                        onClick={() => setIsEditModalOpen(true)}
+                        className="mt-2 text-sm text-slate-600 hover:text-slate-800"
+                    >
+                        Edit Budget
+                    </button>
+                )}
             </div>
 
             {isEditModalOpen && (
@@ -222,7 +234,8 @@ BudgetCard.propTypes = {
     spent: PropTypes.number,
     transactions: PropTypes.number,
     onDelete: PropTypes.func.isRequired,
-    onEdit: PropTypes.func.isRequired
+    onEdit: PropTypes.func.isRequired,
+    compact: PropTypes.bool
 }
 
 export default BudgetCard
