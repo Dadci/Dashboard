@@ -1,6 +1,7 @@
 // src/store/store.js
 import { configureStore } from '@reduxjs/toolkit'
 import budgetsReducer from './budgetSlice'
+import recurringReducer from './recurringSlice'
 import { loadState, saveState } from '../utils/localStorage'
 import throttle from 'lodash/throttle'
 
@@ -9,6 +10,7 @@ const persistedState = loadState();
 export const store = configureStore({
     reducer: {
         budgets: budgetsReducer,
+        recurring: recurringReducer
     },
     preloadedState: persistedState
 })

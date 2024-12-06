@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom'
 import { notify } from '../utils/toast'
+import { categoryColors } from '../utils/colors' // Import the color mapping
 
 const BudgetCard = ({
     id,
@@ -33,33 +34,26 @@ const BudgetCard = ({
     const navigate = useNavigate()
 
     const icons = {
-        // Essential Categories
-        FiHome: <FiHome size={24} />,           // Housing/Rent
-        FiTruck: <FiTruck size={24} />,         // Transportation
-        FiShield: <FiShield size={24} />,       // Insurance
-        FiLifeBuoy: <FiLifeBuoy size={24} />,   // Healthcare
-        FiBriefcase: <FiBriefcase size={24} />, // Work
-        
-        // Lifestyle Categories
-        FiCoffee: <FiCoffee size={24} />,       // Dining/Coffee
-        FiMusic: <FiMusic size={24} />,         // Entertainment
-        FiShoppingBag: <FiShoppingBag size={24} />, // Shopping
-        FiStar: <FiStar size={24} />,           // Personal
-        FiBell: <FiBell size={24} />,           // Subscriptions
-        
-        // Tech Categories
-        FiSettings: <FiSettings size={24} />,    // Electronics
-        FiMonitor: <FiMonitor size={24} />,     // Devices
-        FiGrid: <FiGrid size={24} />,           // Services
-        
-        // Other Categories
-        FiBook: <FiBook size={24} />,           // Education
-        FiCamera: <FiCamera size={24} />,       // Photography
-        FiTarget: <FiTarget size={24} />,       // Goals
-        FiDollarSign: <FiDollarSign size={24} />, // Investments
-        FiList: <FiList size={24} />,           // Bills
-        FiPackage: <FiPackage size={24} />,     // Shopping
-        FiFolder: <FiFolder size={24} />        // Miscellaneous
+        FiHome: <FiHome size={24} color={categoryColors.FiHome} />,           // Housing/Rent
+        FiTruck: <FiTruck size={24} color={categoryColors.FiTruck} />,         // Transportation
+        FiShield: <FiShield size={24} color={categoryColors.FiShield} />,       // Insurance
+        FiLifeBuoy: <FiLifeBuoy size={24} color={categoryColors.FiLifeBuoy} />, // Healthcare
+        FiBriefcase: <FiBriefcase size={24} color={categoryColors.FiBriefcase} />, // Work
+        FiCoffee: <FiCoffee size={24} color={categoryColors.FiCoffee} />,       // Dining/Coffee
+        FiMusic: <FiMusic size={24} color={categoryColors.FiMusic} />,         // Entertainment
+        FiShoppingBag: <FiShoppingBag size={24} color={categoryColors.FiShoppingBag} />, // Shopping
+        FiStar: <FiStar size={24} color={categoryColors.FiStar} />,           // Personal
+        FiBell: <FiBell size={24} color={categoryColors.FiBell} />,           // Subscriptions
+        FiSettings: <FiSettings size={24} color={categoryColors.FiSettings} />,    // Electronics
+        FiMonitor: <FiMonitor size={24} color={categoryColors.FiMonitor} />,     // Devices
+        FiGrid: <FiGrid size={24} color={categoryColors.FiGrid} />,           // Services
+        FiBook: <FiBook size={24} color={categoryColors.FiBook} />,           // Education
+        FiCamera: <FiCamera size={24} color={categoryColors.FiCamera} />,       // Photography
+        FiTarget: <FiTarget size={24} color={categoryColors.FiTarget} />,       // Goals
+        FiDollarSign: <FiDollarSign size={24} color={categoryColors.FiDollarSign} />, // Investments
+        FiList: <FiList size={24} color={categoryColors.FiList} />,           // Bills
+        FiPackage: <FiPackage size={24} color={categoryColors.FiPackage} />,     // Shopping
+        FiFolder: <FiFolder size={24} color={categoryColors.FiFolder} />        // Miscellaneous
     }
 
     const remaining = amount - spent

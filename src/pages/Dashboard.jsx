@@ -1,7 +1,7 @@
 // src/pages/Dashboard.jsx
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { FiDollarSign, FiRepeat, FiCheckCircle, FiPieChart } from 'react-icons/fi'
+import { FiDollarSign, FiRepeat, FiCheckCircle, FiPieChart, FiArrowUpCircle, FiArrowDownCircle } from 'react-icons/fi'
 import BudgetCard from '../components/BudgetCard'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
@@ -11,6 +11,8 @@ import { SpendingBarChart } from '../components/BudgetCharts';
 
 const Dashboard = () => {
     const budgets = useSelector(state => state.budgets.items)
+    const recurringIncome = useSelector(state => state.recurring?.income || [])
+    const recurringExpenses = useSelector(state => state.recurring?.items || [])
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -48,12 +50,41 @@ const Dashboard = () => {
 
     const analytics = {
         totalBudget: budgets.reduce((sum, budget) => sum + budget.amount, 0),
+        totalSpent: budgets.reduce((sum, budget) => sum + budget.spent, 0),
         totalTransactions: budgets.reduce((sum, budget) => sum + (budget.transactions?.length || 0), 0),
         totalBudgets: budgets.length,
-        completedBudgets: budgets.filter(budget => budget.spent >= budget.amount).length
+        completedBudgets: budgets.filter(budget => budget.spent >= budget.amount).length,
+        // Calculate monthly amounts from recurring items
+        monthlyIncome: recurringIncome
+            .filter(item => item.isActive)
+            .reduce((sum, item) => {
+                const amount = Number(item.amount)
+                switch(item.frequency) {
+                    case 'weekly': return sum + (amount * 4)
+                    case 'yearly': return sum + (amount / 12)
+                    default: return sum + amount // monthly
+                }
+            }, 0),
+        monthlyExpenses: recurringExpenses
+            .filter(item => item.isActive)
+            .reduce((sum, item) => {
+                const amount = Number(item.amount)
+                switch(item.frequency) {
+                    case 'weekly': return sum + (amount * 4)
+                    case 'yearly': return sum + (amount / 12)
+                    default: return sum + amount // monthly
+                }
+            }, 0)
     }
 
     const cards = [
+        {
+            title: 'Current Balance',
+            value: `${analytics.totalBudget - analytics.totalSpent}€`,
+            icon: <FiDollarSign size={24} />,
+            color: 'bg-emerald-500',
+            textColor: 'text-emerald-500'
+        },
         {
             title: 'Total Budget',
             value: `${analytics.totalBudget}€`,
@@ -62,11 +93,11 @@ const Dashboard = () => {
             textColor: 'text-blue-500'
         },
         {
-            title: 'Total Transactions',
-            value: analytics.totalTransactions,
+            title: 'Total Spent',
+            value: `${analytics.totalSpent}€`,
             icon: <FiRepeat size={24} />,
-            color: 'bg-green-500',
-            textColor: 'text-green-500'
+            color: 'bg-red-500',
+            textColor: 'text-red-500'
         },
         {
             title: 'Completed Budgets',
@@ -74,6 +105,20 @@ const Dashboard = () => {
             icon: <FiCheckCircle size={24} />,
             color: 'bg-purple-500',
             textColor: 'text-purple-500'
+        },
+        {
+            title: 'Monthly Income',
+            value: `${analytics.monthlyIncome}€`,
+            icon: <FiArrowUpCircle size={24} />,
+            color: 'bg-green-500',
+            textColor: 'text-green-500'
+        },
+        {
+            title: 'Monthly Expenses',
+            value: `${analytics.monthlyExpenses}€`,
+            icon: <FiArrowDownCircle size={24} />,
+            color: 'bg-red-500',
+            textColor: 'text-red-500'
         }
     ]
 
