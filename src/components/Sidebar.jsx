@@ -8,7 +8,7 @@ const Sidebar = () => {
         { name: 'Overview', icon: <FiGrid size={20} />, path: '/' },
         { name: 'Budget', icon: <FiDollarSign size={20} />, path: '/budget' },
         { name: 'Transactions', icon: <FiRepeat size={20} />, path: '/transactions' },
-        { name: 'Recurring', icon: <FiCalendar size={20} />, path: '/recurring' },
+        { name: 'Recurring Bills', icon: <FiCalendar size={20} />, path: '/recurring' },
     ]
 
     return (

@@ -1,9 +1,11 @@
 // src/store/recurringSlice.js
 import { createSlice } from '@reduxjs/toolkit'
+import { categories } from '../utils/categories' // Import categories
 
 const initialState = {
   items: [],
-  income: [] 
+  income: [],
+  categories: categories // Import and use the categories
 }
 
 export const recurringSlice = createSlice({

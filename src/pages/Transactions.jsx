@@ -108,7 +108,7 @@ const Transactions = () => {
                                 <tbody>
                                     {allTransactions.map(transaction => (
                                         <tr key={transaction.id} className="border-b border-slate-100">
-                                            <td className="p-3">{transaction.description}</td>
+                                            <td className="p-3">💸  {transaction.description}</td>
                                             <td className="p-3">{transaction.budgetName}</td>
                                             <td className="p-3">
                                                 <span className="px-2 py-1 bg-slate-100 rounded-full text-sm">

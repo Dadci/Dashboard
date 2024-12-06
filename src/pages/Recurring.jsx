@@ -3,6 +3,8 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { addRecurring, addIncome, toggleRecurring, deleteRecurring } from '../store/recurringSlice'
 import { FiPlus, FiTrash2, FiToggleLeft, FiToggleRight, FiDollarSign, FiArrowUpCircle, FiArrowDownCircle } from 'react-icons/fi'
+import { notify } from '../utils/toast'
+import { categories } from '../utils/categories'
 
 const Recurring = () => {
     const dispatch = useDispatch()
@@ -15,7 +17,7 @@ const Recurring = () => {
         type: 'expense',
         frequency: 'monthly',
         startDate: new Date().toISOString().split('T')[0],
-        category: ''
+        category: 'other'
     })
 
     const handleSubmit = () => {
@@ -26,11 +28,13 @@ const Recurring = () => {
                 ...newItem,
                 amount: Number(newItem.amount)
             }))
+            notify.success('Income added successfully')
         } else {
             dispatch(addRecurring({
                 ...newItem,
                 amount: Number(newItem.amount)
             }))
+            notify.success('Expense added successfully')
         }
         
         setIsModalOpen(false)
@@ -40,8 +44,20 @@ const Recurring = () => {
             type: 'expense',
             frequency: 'monthly',
             startDate: new Date().toISOString().split('T')[0],
-            category: ''
+            category: 'other'
         })
+    }
+
+    const handleToggle = (id, type, isActive) => {
+        dispatch(toggleRecurring(id))
+        notify.success(`${type} ${isActive ? 'disabled' : 'enabled'} successfully`)
+    }
+
+    const handleDelete = (id, description) => {
+        if (window.confirm(`Are you sure you want to delete "${description}"?`)) {
+            dispatch(deleteRecurring(id))
+            notify.success('Item deleted successfully')
+        }
     }
 
     const calculateMonthlyAmount = (items) => {
@@ -82,6 +98,14 @@ const Recurring = () => {
             </button>
         </div>
     )
+
+    // Group items by category
+    const groupedItems = recurring.reduce((acc, item) => {
+        const category = item.category || 'other';
+        if (!acc[category]) acc[category] = [];
+        acc[category].push(item);
+        return acc;
+    }, {});
 
     return (
         <div className="w-full">
@@ -143,65 +167,83 @@ const Recurring = () => {
                     <div className="col-span-12 md:col-span-9">
                         <div className="bg-white rounded-xl border border-slate-300">
                             <div className="p-6">
-                                <h3 className="text-lg font-semibold mb-6">Recurring Items</h3>
+                                <h3 className="text-lg font-semibold mb-6">Recurring Bills</h3>
                                 {(income.length > 0 || recurring.length > 0) ? (
-                                    <div className="space-y-6">
+                                    <div className="space-y-8">
                                         {/* Income Section */}
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Income</h4>
-                                            {income.map(item => (
-                                                <div key={item.id} 
-                                                    className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border-l-4 border-emerald-500">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium">{item.description}</span>
-                                                            <span className="text-sm text-slate-500">
-                                                                Next: {new Date(item.nextDue).toLocaleDateString()} • {item.frequency}
-                                                            </span>
+                                        {income.length > 0 && (
+                                            <div className="space-y-4">
+                                                <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+                                                    Income Sources
+                                                </h4>
+                                                <div className="space-y-2">
+                                                    {income.map(item => (
+                                                        <div key={item.id} 
+                                                            className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border-l-4 border-emerald-500">
+                                                            <div className="flex flex-col">
+                                                                <span className="font-medium">{item.description}</span>
+                                                                <span className="text-sm text-slate-500">
+                                                                    Next: {new Date(item.nextDue).toLocaleDateString()} • {item.frequency}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex items-center gap-4">
+                                                                <span className="font-semibold text-emerald-600">+€{item.amount}</span>
+                                                                <button 
+                                                                    onClick={() => handleToggle(item.id, 'Income', item.isActive)}
+                                                                    className={`${item.isActive ? 'text-emerald-500' : 'text-slate-400'}`}
+                                                                >
+                                                                    {item.isActive ? <FiToggleRight size={24} /> : <FiToggleLeft size={24} />}
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="font-semibold text-emerald-600">+€{item.amount}</span>
-                                                        <button 
-                                                            onClick={() => dispatch(toggleRecurring(item.id))}
-                                                            className={`${item.isActive ? 'text-emerald-500' : 'text-slate-400'}`}
-                                                        >
-                                                            {item.isActive ? <FiToggleRight size={24} /> : <FiToggleLeft size={24} />}
-                                                        </button>
-                                                    </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        )}
 
-                                        {/* Expenses Section */}
-                                        <div className="space-y-2">
-                                            <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-4">Expenses</h4>
-                                            {recurring.map(item => (
-                                                <div key={item.id} 
-                                                    className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border-l-4 border-red-500">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium">{item.description}</span>
-                                                            <span className="text-sm text-slate-500">
-                                                                Next: {new Date(item.nextDue).toLocaleDateString()} • {item.frequency}
-                                                            </span>
-                                                        </div>
+                                        {/* Expenses By Category */}
+                                        {recurring.length > 0 && (
+                                            <div className="space-y-6">
+                                                <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider">
+                                                    Expenses By Category
+                                                </h4>
+                                                {Object.entries(groupedItems).map(([category, items]) => (
+                                                    <div key={category} className="space-y-2">
+                                                        <h5 className="text-sm font-medium text-slate-600 capitalize pl-2">
+                                                            {categories[category]?.label || 'Other'}
+                                                        </h5>
+                                                        {items.map(item => (
+                                                            <div 
+                                                                key={item.id}
+                                                                className={`flex items-center justify-between p-4 bg-slate-50 rounded-lg border-l-4 border-${categories[item.category]?.color || 'gray'}-500`}
+                                                            >
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-medium">{item.description}</span>
+                                                                    <span className="text-sm text-slate-500">
+                                                                        Next: {new Date(item.nextDue).toLocaleDateString()} • {item.frequency}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex items-center gap-4">
+                                                                    <span className="font-semibold text-red-600">-€{item.amount}</span>
+                                                                    <button 
+                                                                        onClick={() => handleToggle(item.id, 'Expense', item.isActive)}
+                                                                        className={`${item.isActive ? 'text-red-500' : 'text-slate-400'}`}
+                                                                    >
+                                                                        {item.isActive ? <FiToggleRight size={24} /> : <FiToggleLeft size={24} />}
+                                                                    </button>
+                                                                    <button 
+                                                                        onClick={() => handleDelete(item.id, item.description)} 
+                                                                        className="text-red-500"
+                                                                    >
+                                                                        <FiTrash2 />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                     </div>
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="font-semibold text-red-600">-€{item.amount}</span>
-                                                        <button 
-                                                            onClick={() => dispatch(toggleRecurring(item.id))}
-                                                            className={`${item.isActive ? 'text-red-500' : 'text-slate-400'}`}
-                                                        >
-                                                            {item.isActive ? <FiToggleRight size={24} /> : <FiToggleLeft size={24} />}
-                                                        </button>
-                                                        <button onClick={() => dispatch(deleteRecurring(item.id))} className="text-red-500">
-                                                            <FiTrash2 />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
                                     <EmptyState type="recurring" />
@@ -226,6 +268,19 @@ const Recurring = () => {
                                 <option value="expense">Expense</option>
                                 <option value="income">Income</option>
                             </select>
+                            <div className="space-y-4">
+                                <select
+                                    className="w-full p-2 border rounded-lg"
+                                    value={newItem.category}
+                                    onChange={e => setNewItem({ ...newItem, category: e.target.value })}
+                                >
+                                    {Object.entries(categories).map(([key, { label }]) => (
+                                        <option key={key} value={key}>
+                                            {label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                             <input
                                 type="text"
                                 placeholder="Description"
