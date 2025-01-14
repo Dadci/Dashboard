@@ -6,6 +6,7 @@ import Budget from "./pages/Budget"
 import BudgetDetails from "./pages/BudgetDetails"
 import Transactions from "./pages/Transactions"
 import Recurring from './pages/Recurring'
+import Goals from './pages/Goals'
 import { Provider } from 'react-redux'
 import store from './store/store'
 import { Toaster } from 'react-hot-toast'
@@ -21,7 +22,8 @@ function App() {
             <Route path="/budget" element={<Budget />} />
             <Route path="/budget/:id" element={<BudgetDetails />} />
             <Route path="/transactions" element={<Transactions />} />
-            <Route path="/recurring" element={<Recurring />} /> {/* Move inside Layout */}
+            <Route path="/recurring" element={<Recurring />} />
+            <Route path="/goals" element={<Goals />} />
           </Route>
         </Routes>
       </Router>

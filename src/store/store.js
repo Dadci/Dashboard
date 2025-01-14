@@ -2,6 +2,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import budgetsReducer from './budgetSlice'
 import recurringReducer from './recurringSlice'
+import goalReducer from './goalSlice'
 import { loadState, saveState } from '../utils/localStorage'
 import throttle from 'lodash/throttle'
 
@@ -10,7 +11,10 @@ const persistedState = loadState();
 export const store = configureStore({
     reducer: {
         budgets: budgetsReducer,
-        recurring: recurringReducer
+        recurring: recurringReducer,
+        goals: goalReducer
+
+
     },
     preloadedState: persistedState
 })
@@ -19,7 +23,9 @@ export const store = configureStore({
 // Throttle to prevent too many writes
 store.subscribe(throttle(() => {
     saveState({
-        budgets: store.getState().budgets
+        budgets: store.getState().budgets,
+        recurring: store.getState().recurring,
+        goals: store.getState().goals
     });
 }, 1000));
 

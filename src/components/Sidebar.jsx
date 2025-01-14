@@ -1,6 +1,6 @@
 // src/components/Sidebar.jsx
 import { NavLink } from 'react-router-dom'
-import { FiGrid, FiDollarSign, FiRepeat, FiCalendar } from 'react-icons/fi'
+import { FiGrid, FiDollarSign, FiRepeat, FiCalendar, FiTarget } from 'react-icons/fi'
 import Logo from '../assets/logo.svg'
 
 const Sidebar = () => {
@@ -9,6 +9,7 @@ const Sidebar = () => {
         { name: 'Budget', icon: <FiDollarSign size={20} />, path: '/budget' },
         { name: 'Transactions', icon: <FiRepeat size={20} />, path: '/transactions' },
         { name: 'Recurring Bills', icon: <FiCalendar size={20} />, path: '/recurring' },
+        { name: 'Goals', icon: <FiTarget size={20} />, path: '/goals' }
     ]
 
     return (
